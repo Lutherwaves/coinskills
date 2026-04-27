@@ -7,6 +7,7 @@
     {
       "name": "coinskills",
       "source": "./",
+      "description": "Goal-centric financial superpowers — profile, goals, plans, affordability decisions, logging, analysis and reviews",
       "version": "0.1.0"
     }
   ]
