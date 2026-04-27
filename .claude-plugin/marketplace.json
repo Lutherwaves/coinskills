@@ -1,0 +1,13 @@
+{
+  "name": "coinskills",
+  "owner": {
+    "name": "Lutherwaves"
+  },
+  "plugins": [
+    {
+      "name": "coinskills",
+      "source": "./",
+      "version": "0.1.0"
+    }
+  ]
+}
