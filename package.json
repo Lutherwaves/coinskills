@@ -1,0 +1,11 @@
+{
+  "name": "coinskills",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Goal-centric financial superpowers for Claude Code",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lutherwaves/coinskills"
+  }
+}
