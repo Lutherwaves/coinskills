@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+session_context="<IMPORTANT>\ncoinskills е инсталиран.\n\nНалични инструменти за личните финанси:\n- /coinskills:init — създаване на профил и работно пространство\n- /coinskills:start — статус спрямо целите, главно меню\n- /coinskills:goals — цели (създаване, редакция, оттегляне)\n- /coinskills:plan — стратегия за дадена цел\n- /coinskills:afford — \\\"мога ли да си позволя X\\\" решения\n- /coinskills:log — транзакции / приходи / баланси\n- /coinskills:analyze — разходи, нетна стойност, разпределение\n- /coinskills:review — периодичен преглед\n- /coinskills:edit — редакция на стойности (с undo)\n- /coinskills:migrate — миграция v0.1 → v0.2\n\nПоверителност: всички финансови данни остават в личното работно пространство. Плъгин репото никога не получава реални стойности.\n</IMPORTANT>"
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  printf '{\n  "additional_context": "%s"\n}\n' "$session_context"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context"
+else
+  printf '{\n  "additional_context": "%s"\n}\n' "$session_context"
+fi
+
+exit 0

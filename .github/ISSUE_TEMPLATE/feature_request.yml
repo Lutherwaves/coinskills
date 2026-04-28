@@ -1,0 +1,60 @@
+name: Feature request
+description: Propose a new skill, command, or improvement to coinskills.
+title: "feat: <short description>"
+labels: ["enhancement", "status:needs-triage"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What do you want to be able to do?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem does this solve? Concrete personal-finance workflow example helps. Use placeholders for real amounts.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - init (setup / profile / snapshot interview)
+        - start (status snapshot vs goals)
+        - goals (create / edit / retire goals)
+        - plan (build or revise strategy for a goal)
+        - afford ("can I afford X" decisions)
+        - log (transactions / income / balance entries)
+        - analyze (spending / net worth / allocation)
+        - review (periodic review)
+        - edit (guided field editor)
+        - migrate (schema migrations)
+        - schemas / data model
+        - shared references (path-guard, mutation pipeline, snapshot compute)
+        - infra (CI, automation, plumbing)
+        - docs
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Slash command shape, inputs/outputs, files touched, schema changes if any. Sketch is fine.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: privacy
+    attributes:
+      label: Privacy impact
+      description: Does this read or write financial data? Does it introduce a new file shape? Anything that touches user state must respect the workspace path-guard. Note any new gitignore patterns needed.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Links to related issues, examples from other personal-finance tools, etc.

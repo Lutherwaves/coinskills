@@ -1,0 +1,82 @@
+name: Bug report
+description: Something in coinskills misbehaves — wrong output, crash, silent failure, data corruption, etc.
+title: "bug: <short description>"
+labels: ["bug", "status:needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. **Do not paste real financial data.** Redact account ids, balances, goal amounts — use placeholders like `<account-id>`, `€XXX`, `<goal>`.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences on what went wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Exact slash commands and inputs. Use placeholders for any financial values.
+      placeholder: |
+        1. /coinskills:init
+        2. /coinskills:afford "Can I afford a €X espresso machine?"
+        3. /coinskills:edit account <id>
+        4. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the failure mode — wrong verdict, silent skip, crash, schema rejection, snapshot drift, missing change-log entry, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Affected artifacts
+      description: Which files were touched? (accounts.json, goals/*.md, plans/*.md, snapshots/latest.json, changes.jsonl, etc.) — describe the shape of the issue, do not paste contents with real values.
+  - type: input
+    id: schema_version
+    attributes:
+      label: Workspace schema_version
+      description: From `profile.md` frontmatter. v0.2 is `2`, v0.1 is `1` or absent.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: coinskills version / commit
+      description: Output of `git rev-parse --short HEAD` in your coinskills checkout, or the plugin version.
+    validations:
+      required: true
+  - type: input
+    id: claude
+    attributes:
+      label: Claude Code version
+      description: Output of `claude --version`.
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      options:
+        - Linux
+        - macOS
+        - Windows (WSL)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output
+      description: Paste relevant tool output. Wrap in triple backticks. Redact financial values.
+      render: shell
