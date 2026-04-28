@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / Discussion
+    url: https://github.com/Lutherwaves/coinskills/discussions
+    about: Ask a question or discuss coinskills usage, goal-driven personal finance workflows, or ideas.
+  - name: Security disclosure
+    url: https://github.com/Lutherwaves/coinskills/security/advisories/new
+    about: Report a security or privacy issue privately. Do NOT open a public issue.
