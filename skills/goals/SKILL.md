@@ -68,6 +68,16 @@ Interview the user with these **7 questions, one at a time**. Wait for each answ
 
 6. **"Which accounts are linked? (comma-separated ids from accounts.json)"**
 
+6b. **Funding mode:** "Will this goal be funded from monthly contributions (`monthly`), only from windfalls like bonuses or equity vests (`windfall-only`), or both (`hybrid`)?"
+
+6c. **Windfall sources** (only if mode != monthly): "List the windfall sources that should fund this goal — comma-separated. Examples: annual-bonus, equity-vest, severance-overflow, side-income."
+
+6d. **Prerequisites** (optional, defer if user is unsure): "Does this goal have hard prerequisites that must be met before it can complete or be drawn down? Examples: another goal must be done first, an account must reach a balance, a stable-income period must be confirmed. (yes / no / later)"
+
+   On yes, walk through prereq creation: for each prereq, ask which type (goal-complete / account-balance / attestation / time-since), then collect the type-specific fields from `schemas/goal.schema.json`.
+
+   On no/later, set `prerequisites: []`.
+
 7. **"Why does this matter? (free-form, becomes the body)"**
 
 ### Generate the id
@@ -85,23 +95,28 @@ If the user gives "50000 EUR" or "€50,000", extract `target_amount: 50000` and
 
 ### Write `goals/<id>.md`
 
+**Before writing**, apply path guard from `skills/_shared/path-guard.md` and follow the mutation pipeline from `skills/_shared/mutation-pipeline.md`. Validate the frontmatter against `schemas/goal.schema.json` before writing. Append a `changes.jsonl` event with `op: create` and `target: "goals/<id>.md"`. Mark snapshot stale.
+
 Use this exact template, substituting the user's answers:
 
 ```yaml
 ---
-id: house-deposit
-title: House deposit
-type: savings
-target_amount: 50000
-currency: EUR
-deadline: 2028-06-01
-priority: 1
-status: active
-linked_accounts: [savings-emoney, investments-trading212]
-created: 2026-04-27
+id: <id>
+title: <title>
+type: <savings | debt-payoff | investment | retirement | purchase | custom>
+target_amount: <number>
+currency: <ISO code>
+deadline: <YYYY-MM-DD or "none">
+priority: <integer ≥ 1>
+status: <active | blocked | paused | complete | retired>
+linked_accounts: [<ids>]
+created: <YYYY-MM-DD>
+funding_mode: <monthly | windfall-only | hybrid>
+windfall_sources: [<source-1>, <source-2>]   # only when funding_mode != monthly
+prerequisites: []                              # see schemas/goal.schema.json for shape
 ---
 # Why
-Why this matters. Constraints. What "done" looks like beyond the number.
+<purpose, constraints, what "done" looks like beyond the number>
 ```
 
 Set `created` to today's date (`YYYY-MM-DD`). Set `status: active`. The body under `# Why` is the user's answer to question 7.
