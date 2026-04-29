@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coinskills:account",
+  "title": "Accounts",
+  "description": "accounts.json — array of account entries.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "type", "name", "currency", "module"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+      "type": {"enum": ["bank", "savings", "credit_card", "e_money", "broker", "crypto_wallet", "loan", "mortgage", "other"]},
+      "name": {"type": "string", "minLength": 1},
+      "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+      "balance": {"type": "number"},
+      "limit": {"type": "number"},
+      "apr": {"type": "number", "minimum": 0, "maximum": 1},
+      "billing_cycle_day": {"type": "integer", "minimum": 1, "maximum": 31},
+      "rewards": {"type": "string"},
+      "monthly_payment": {"type": "number", "minimum": 0},
+      "module": {"enum": ["personal", "investments", "business"]},
+      "_estimated": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+    },
+    "additionalProperties": false
+  }
+}

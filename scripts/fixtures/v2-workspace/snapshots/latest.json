@@ -1,0 +1,8 @@
+{
+  "computed_at": "2026-04-28T10:00:00Z",
+  "stale": false,
+  "last_event_id": null,
+  "liquidity": {"disposable": 500, "emergency_buffer": 4800, "monthly_expenses": 800, "monthly_capacity": 2200},
+  "goals": [],
+  "warnings": []
+}
