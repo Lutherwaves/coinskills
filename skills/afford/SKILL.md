@@ -216,7 +216,7 @@ Pass B — Goal impact:
 
 If all goals show `none`, print: `No goal impact detected.`
 
-### Pass B (continued) — Prereq status for blocked/windfall-only goals
+### Step 4.5 / Pass B (continued) — Prereq status for blocked/windfall-only goals
 
 The snapshot's per-goal `prereqs_met` is already computed. For each goal where `prereqs_met` is non-null:
 
