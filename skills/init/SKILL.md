@@ -45,6 +45,10 @@ Ask the user these **8 questions one at a time**. Wait for each answer before as
 
    After this, also collect locale: **"What locale should I format dates and numbers in? (e.g. `en-US`, `bg-BG`, `de-DE`)"** — if the user is unsure, infer a default from currency (EUR → `en-IE`, BGN → `bg-BG`, USD → `en-US`, GBP → `en-GB`) and confirm.
 
+5b. **"What's a rough monthly total for variable spending — groceries, dining, kids' costs, miscellaneous — EXCLUDING rent, utilities, insurance, and other fixed bills?"** Store as `variable_spending_estimate` (currency = profile.currency).
+
+This number is critical for `afford` to compute monthly capacity before transaction history exists. The user can correct it later via `/coinskills:edit profile`. If unsure, suggest a starting point of `0.4 × monthly net income` and let them confirm.
+
 6. **"How often do you want to do a formal financial review?"**
    - monthly
    - quarterly
@@ -148,12 +152,13 @@ Write `profile.md` using the following template, substituting the user's answers
 ---
 name: <user name>
 created: <YYYY-MM-DD>
-schema_version: 1
+schema_version: 2
 modules: [<enabled modules, comma-separated>]
 currency: <currency>
 locale: <locale, e.g. en-US or bg-BG>
 risk_tolerance: <conservative | moderate | aggressive>
 emergency_fund_months: <number>
+variable_spending_estimate: <user-provided monthly EUR estimate excluding fixed bills>
 preferences:
   review_cadence: <monthly | quarterly | yearly>
   decision_style: <data-first | gut-first | balanced>
@@ -172,9 +177,48 @@ Write the absolute path of the workspace to `~/.coinskills-workspace` so other s
 echo "<absolute-path-to-workspace>" > ~/.coinskills-workspace
 ```
 
+### 2h. Seed v0.2 state files
+
+Resolve the workspace root (already in `<absolute-path-to-workspace>` from earlier).
+
+Generate a UTC timestamp now: `TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)`. Generate a 6-hex suffix: `HEX=$(python3 -c 'import secrets; print(secrets.token_hex(3))')`.
+
+Write `<workspace>/changes.jsonl` with exactly one line:
+
+```json
+{"id":"chg_<TS>_<HEX>","timestamp":"<TS>","skill":"init","op":"create","target":"workspace","before":null,"after":{"schema_version":2},"validation":"ok","note":"workspace initialized"}
+```
+
+Write `<workspace>/snapshots/latest.json`:
+
+```json
+{
+  "computed_at": "<TS>",
+  "stale": true,
+  "last_event_id": "chg_<TS>_<HEX>",
+  "liquidity": {"disposable": 0, "emergency_buffer": 0, "monthly_expenses": 0, "monthly_capacity": 0},
+  "goals": [],
+  "warnings": []
+}
+```
+
+Write `<workspace>/.gitattributes`:
+
+```
+changes.jsonl merge=union
+```
+
+(Copy the template from the plugin's `skills/_shared/workspace-gitattributes.txt`.)
+
+Create the directories: `mkdir -p <workspace>/snapshots <workspace>/.backups`.
+
 ---
 
 ## Step 3: Financial Snapshot Interview
+
+**Before any write below**, resolve the workspace root and apply the path guard from `skills/_shared/path-guard.md`. Every file written in this section must be inside the workspace root.
+
+**For every account/goal/plan/recurring/income/holding write below**, follow `skills/_shared/mutation-pipeline.md`: validate against the relevant schema in `<plugin-root>/schemas/`, append a `changes.jsonl` event, then write the file. Mark `snapshots/latest.json` stale at the end of the entire init flow (one stale-mark, not per-write — init is one logical unit).
 
 Tell the user: "Now let's capture a snapshot of where you stand financially. I'll go through 8 categories — type **done** at any point within a category to move to the next."
 
