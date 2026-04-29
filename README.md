@@ -22,6 +22,21 @@ Goal-centric financial superpowers for Claude Code. Profile your finances, set g
 - `/coinskills:log` — Quick ad-hoc transaction / income / balance entry
 - `/coinskills:analyze` — Spending, net worth, allocation — framed against goals
 - `/coinskills:review` — Periodic review (monthly/quarterly/yearly)
+- `/coinskills:edit` — Guided editor for any account/goal/plan/profile field. Confirms estimated values, supports undo.
+- `/coinskills:migrate` — One-shot v0.1 → v0.2 workspace migration. Run once after upgrading the plugin.
+
+## v0.2 features
+
+- **Recoverability.** Every mutation is logged to `changes.jsonl`. `/coinskills:edit undo` reverses any change with conflict detection.
+- **Estimated-value tracking.** Fields you guessed at init time are flagged with `_estimated`. The edit skill prompts you to confirm or correct them over time.
+- **Structured prerequisites.** Goals can specify hard prereqs (other goals complete, account balance thresholds, attestations, time-since) and `afford` evaluates them automatically.
+- **Funding modes.** `monthly`, `windfall-only` (aspirational goals), `hybrid`. Afford's goal-impact analysis respects funding mode — windfall-only goals don't get "delayed" by everyday spending.
+- **Goal-detection in afford.** When you ask about a big-ticket item with no deadline and no rush, afford suggests creating a goal first instead of forcing a YES/NO verdict.
+- **Snapshot cache.** Liquidity and per-goal projections are computed once and cached at `snapshots/latest.json`. Any mutation marks it stale; the next read recomputes.
+
+## Upgrading
+
+If you have a v0.1 workspace, run `/coinskills:migrate` after installing v0.2. The migration is idempotent, creates a backup at `.backups/`, and walks you through converting prose prerequisites to structured form.
 
 ## Quickstart
 
