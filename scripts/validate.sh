@@ -20,7 +20,7 @@ if ! jq -e '.name == "coinskills" and .version' "$ROOT/.claude-plugin/plugin.jso
 fi
 
 # Validate every SKILL.md
-EXPECTED_SKILLS=(init start goals plan afford log analyze review)
+EXPECTED_SKILLS=(init start goals plan afford log analyze review edit migrate)
 for skill in "${EXPECTED_SKILLS[@]}"; do
   file="$ROOT/skills/$skill/SKILL.md"
   if [[ ! -f "$file" ]]; then
