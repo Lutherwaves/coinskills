@@ -15,7 +15,7 @@ Locate the workspace: read `~/.coinskills-workspace` for the absolute path. If t
 
 ---
 
-## Step 0: Schema version gate
+## Step 0: Schema version gate + goal-detection
 
 **Schema version gate.** Read `<workspace>/profile.md` frontmatter. If `schema_version != 2` (or absent), print:
 
@@ -26,6 +26,35 @@ Exit. Do NOT proceed.
 **Load aggregate state via snapshot.** Follow `skills/_shared/snapshot-compute.md`. The snapshot provides `liquidity` (disposable, emergency_buffer, monthly_expenses, monthly_capacity), per-goal `prereqs_met` and `projected_completion`, and `warnings` (every `_estimated` field). Use these values directly for Step 3 (Compute Liquidity) — do not recompute unless the snapshot is stale.
 
 **Goal references in output:** always render as `<title> (<id>)`. Example: `Emergency fund 6mo (emergency-fund-6mo)`. Never bare ids.
+
+## Step 0b: Goal-detection heuristic (runs after parsing Step 1)
+
+After parsing the user's message into `{amount, currency, item, frequency, urgency, deadline}`, evaluate whether this is really a goal:
+
+```
+goal_detected = (
+  classification == "one-off purchase" AND
+  deadline == "none" AND
+  urgency == "nice-to-have" AND
+  amount > 6 * snapshot.liquidity.monthly_capacity AND
+  snapshot.liquidity.disposable < amount AND
+  no active goal title/notes fuzzy-matches the item
+)
+```
+
+Fuzzy match: case-insensitive substring match between item description and goal `title` OR `# Why` body, considering common synonyms (car/vehicle, house/property, studio/space).
+
+If `goal_detected == true`, pause before continuing the algorithm and ask:
+
+> This looks more like a goal than a one-off decision: €<amount> is <amount/monthly_capacity>× your monthly capacity, no deadline, no rush. Want to add it as a goal instead, or run the affordability check anyway?
+>
+> (a) goal — add it via /coinskills:goals (this skill ends, that one starts)
+> (b) afford — continue with the affordability check
+> (c) cancel — exit
+
+On (a): chain to `/coinskills:goals` with the parsed item pre-filled (suggested title = item, target_amount = amount, currency = currency, type = purchase, deadline = none). End this skill invocation.
+On (b): proceed to Step 1 normally.
+On (c): exit, no log entry.
 
 ## Step 1: Parse the Ask
 
@@ -186,6 +215,25 @@ Pass B — Goal impact:
 ```
 
 If all goals show `none`, print: `No goal impact detected.`
+
+### Pass B (continued) — Prereq status for blocked/windfall-only goals
+
+The snapshot's per-goal `prereqs_met` is already computed. For each goal where `prereqs_met` is non-null:
+
+Render after the impact line:
+
+```
+  Sample Car (mustang-dark-horse) — prereqs: 2/5 met
+       ✗ finish-consumer-credit not complete (active, balance €10,000)
+       ✗ savings-emoney balance €1,000 < €20,000
+       ○ Acme salary stable for 12 months — attestation pending
+            (confirm via /coinskills:edit attestation mustang-dark-horse "Acme salary stable for 12 months")
+       Impact: none (windfall-only, gates unmet)
+```
+
+**Verdict rules update:**
+- If the user's affordability question is *about a gated goal itself* (the parsed item fuzzy-matches a `windfall-only` or `blocked` goal AND prereqs are unmet) → verdict is automatic NO with the gate list.
+- If the user's question is about something else, gated goals show `impact: none` (you can't slow what isn't moving) per the funding-mode rule.
 
 ### Pass C — Payment Method Ranking
 
