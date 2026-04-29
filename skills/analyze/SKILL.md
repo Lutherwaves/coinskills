@@ -13,6 +13,18 @@ Locate the workspace: read `~/.coinskills-workspace` for the absolute path. If t
 
 ---
 
+## Step 0: Schema version gate
+
+**Schema version gate.** Read `<workspace>/profile.md` frontmatter. If `schema_version != 2` (or absent), print:
+
+> v0.2 features require migration. Run `/coinskills:migrate` first.
+
+Exit. Do NOT proceed.
+
+**Load aggregate state via snapshot.** Follow `skills/_shared/snapshot-compute.md`. The snapshot provides `liquidity` (disposable, emergency_buffer, monthly_expenses, monthly_capacity), per-goal `prereqs_met` and `projected_completion`, and `warnings` (every `_estimated` field). Use these values directly — do not recompute unless the snapshot is stale.
+
+**Goal references in output:** always render as `<title> (<id>)`. Example: `Emergency fund 6mo (emergency-fund-6mo)`. Never bare ids.
+
 ## Step 1: Identify the Question
 
 Classify the user's request into exactly one of these views:
