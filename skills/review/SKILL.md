@@ -13,6 +13,14 @@ Locate the workspace: read `~/.coinskills-workspace` for the absolute path. If t
 
 ---
 
+## Step 0: Schema version gate
+
+**Schema version gate.** Read `<workspace>/profile.md` frontmatter. If `schema_version != 2` (or absent), print:
+
+> v0.2 features require migration. Run `/coinskills:migrate` first.
+
+Exit. Do NOT proceed.
+
 ## Step 1: Determine Period
 
 Ask the user which period to review:
