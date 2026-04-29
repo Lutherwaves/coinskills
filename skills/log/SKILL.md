@@ -97,6 +97,13 @@ Do not add any blank lines before the header. The file must start with `| date`.
 
 ## Step 4: Append Row
 
+**Apply path guard** from `skills/_shared/path-guard.md` before any write. **Run the mutation pipeline** from `skills/_shared/mutation-pipeline.md` for every state change:
+
+- Transaction append → `op: create`, `target: modules/personal/transactions/YYYY-MM.md#<row>`
+- Account balance update → `op: update`, `target: accounts.json#<account-id>.balance`
+
+Mark snapshot stale at the end of the log invocation (one mark, even if multiple writes happened).
+
 Append exactly one row to the end of the target transaction file using this exact markdown table format:
 
 ```
