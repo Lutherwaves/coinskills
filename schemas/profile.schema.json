@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coinskills:profile",
+  "title": "Profile Frontmatter",
+  "type": "object",
+  "required": ["name", "created", "schema_version", "modules", "currency", "locale", "emergency_fund_months", "preferences"],
+  "properties": {
+    "name": {"type": "string", "minLength": 1},
+    "created": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "schema_version": {"type": "integer", "enum": [1, 2]},
+    "modules": {"type": "array", "items": {"enum": ["personal", "investments", "business"]}, "minItems": 1, "uniqueItems": true},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "locale": {"type": "string"},
+    "risk_tolerance": {"enum": ["conservative", "moderate", "aggressive"]},
+    "emergency_fund_months": {"type": "integer", "minimum": 1, "maximum": 24},
+    "variable_spending_estimate": {"type": "number", "minimum": 0},
+    "preferences": {
+      "type": "object",
+      "required": ["review_cadence", "decision_style"],
+      "properties": {
+        "review_cadence": {"enum": ["monthly", "quarterly", "yearly"]},
+        "decision_style": {"enum": ["data-first", "gut-first", "balanced"]}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

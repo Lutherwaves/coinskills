@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coinskills:holding",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["ticker", "shares", "avg_cost", "currency", "account", "asset_class"],
+    "properties": {
+      "ticker": {"type": "string", "minLength": 1},
+      "shares": {"type": "number", "minimum": 0},
+      "avg_cost": {"type": "number", "minimum": 0},
+      "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+      "account": {"type": "string"},
+      "asset_class": {"enum": ["equity", "bond", "cash", "crypto", "commodity", "other"]}
+    },
+    "additionalProperties": false
+  }
+}

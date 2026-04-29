@@ -1,0 +1,12 @@
+{
+  "name": "fixture",
+  "created": "2026-04-28",
+  "schema_version": 2,
+  "modules": ["personal", "investments"],
+  "currency": "EUR",
+  "locale": "en-US",
+  "risk_tolerance": "moderate",
+  "emergency_fund_months": 6,
+  "variable_spending_estimate": 1200,
+  "preferences": {"review_cadence": "quarterly", "decision_style": "balanced"}
+}
