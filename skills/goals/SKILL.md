@@ -7,7 +7,7 @@ description: Управление на финансови цели — създ�
 
 ## Overview
 
-Goals are the spine of coinskills. Every other skill — plan, afford, analyze, review, log — frames its output against active goals. This skill owns the full lifecycle: list what you have, create new goals, edit existing ones, mark them achieved when you cross the finish line, or abandon ones that no longer matter. All state lives in `goals/<id>.md` inside the user's workspace repo.
+Goals are the spine of coinskills. Every other skill — plan, afford, analyze, review, log — frames its output against active goals. This skill owns the full lifecycle: list what you have, create new goals, edit existing ones, mark complete when you cross the finish line, or abandon ones that no longer matter. All state lives in `goals/<id>.md` inside the user's workspace repo.
 
 Locate the workspace: read `~/.coinskills-workspace` for the absolute path. If the file doesn't exist, stop and tell the user to run `/coinskills:init` first.
 
@@ -46,7 +46,7 @@ Print a markdown table:
 | emergency-fund | Emergency fund | savings | €12,000 | none | 2 | active | — |
 ```
 
-Sort by `priority` ascending (1 = most important first). Group: active goals first, then paused, then achieved/abandoned.
+Sort by `priority` ascending (1 = most important first). Group: active goals first, then paused, then complete/retired.
 
 If `goals/` is empty or the directory doesn't exist, tell the user they have no goals yet and suggest running `/coinskills:goals new`.
 
@@ -171,11 +171,11 @@ goals: edit {id}
 
 Load `goals/<id>.md`. If the file doesn't exist, list available ids and ask the user to pick one.
 
-Confirm: **"Mark '{title}' as achieved? This will supersede all linked active plans. (y/n)"**
+Confirm: **"Mark '{title}' as complete? This will supersede all linked active plans. (y/n)"**
 
 If confirmed:
 
-1. Set `status: achieved` in the frontmatter.
+1. Set `status: complete` in the frontmatter.
 2. Append to the body (after the existing `# Why` content):
 
 ```
@@ -190,7 +190,7 @@ Date: {YYYY-MM-DD}
 ### Commit
 
 ```
-goals: achieved {id}
+goals: complete {id}
 ```
 
 ---
@@ -203,7 +203,7 @@ Ask: **"Why are you abandoning '{title}'? (free-form — this gets appended to t
 
 After the user answers:
 
-1. Set `status: abandoned` in the frontmatter.
+1. Set `status: retired` in the frontmatter.
 2. Append to the body:
 
 ```
@@ -217,7 +217,7 @@ Reason: {user's reason}
 ### Commit
 
 ```
-goals: abandoned {id}
+goals: retired {id}
 ```
 
 ---
@@ -228,7 +228,7 @@ goals: abandoned {id}
 |---|---|
 | new | `goals: new goal {id} ({target_amount} {currency} by {deadline})` |
 | edit | `goals: edit {id}` |
-| achieve | `goals: achieved {id}` |
-| abandon | `goals: abandoned {id}` |
+| achieve | `goals: complete {id}` |
+| abandon | `goals: retired {id}` |
 
 Run `git add goals/ plans/` before committing (plans may be modified by achieve/abandon). Run `git commit -m "{message}"` from the workspace root.
