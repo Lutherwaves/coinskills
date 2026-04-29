@@ -6,3 +6,22 @@ node_modules/
 tmp/
 .idea/
 .vscode/
+
+# Defense in depth: never commit financial-shaped files into the plugin repo.
+# Workspaces live elsewhere — these patterns catch any accidental write that
+# resolves into the plugin tree.
+**/accounts.json
+**/changes.jsonl
+**/snapshots/
+**/goals/*.md
+**/plans/*.md
+**/profile.md
+**/assets-illiquid.json
+**/modules/personal/
+**/modules/investments/holdings.json
+**/.backups/
+*-finances*
+*-coinscious*
+
+# Allow fixtures (controlled, no real data) — these MUST exist for tests.
+!scripts/fixtures/**
