@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coinskills:snapshot",
+  "type": "object",
+  "required": ["computed_at", "stale", "last_event_id", "liquidity", "goals", "warnings"],
+  "properties": {
+    "computed_at": {"type": "string", "format": "date-time"},
+    "stale": {"type": "boolean"},
+    "last_event_id": {"oneOf": [{"type": "null"}, {"type": "string"}]},
+    "liquidity": {
+      "type": "object",
+      "required": ["disposable", "emergency_buffer", "monthly_expenses", "monthly_capacity"],
+      "properties": {
+        "disposable": {"type": "number"},
+        "emergency_buffer": {"type": "number"},
+        "monthly_expenses": {"type": "number"},
+        "monthly_capacity": {"type": "number"}
+      }
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "prereqs_met"],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"type": "string"},
+          "prereqs_met": {"oneOf": [{"type": "null"}, {"type": "object"}]},
+          "projected_completion": {"type": "string"},
+          "delay_days_from_deadline": {"type": "integer"}
+        }
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

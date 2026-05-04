@@ -1,0 +1,4 @@
+[
+  {"id": "bank-main", "type": "bank", "name": "Main Bank", "currency": "EUR", "balance": 1000, "module": "personal"},
+  {"id": "card-main", "type": "credit_card", "name": "Card", "currency": "EUR", "limit": 5000, "balance": -200, "apr": 0.21, "billing_cycle_day": 15, "module": "personal", "_estimated": ["apr"]}
+]

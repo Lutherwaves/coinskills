@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "coinskills:change-event",
+  "title": "Change Event",
+  "type": "object",
+  "required": ["id", "timestamp", "skill", "op", "target", "validation"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^chg_\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z_[a-z0-9]+$"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "skill": {"type": "string"},
+    "op": {"enum": ["create", "update", "delete", "confirm", "undo", "migrate"]},
+    "target": {"type": "string"},
+    "before": {},
+    "after": {},
+    "validation": {"enum": ["ok", "warn"]},
+    "note": {"type": "string"},
+    "reverses": {"type": "string"}
+  },
+  "additionalProperties": false
+}

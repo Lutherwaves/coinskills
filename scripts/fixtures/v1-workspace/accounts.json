@@ -1,0 +1,3 @@
+[
+  {"id": "bank-main", "type": "bank", "name": "Main Bank", "currency": "EUR", "balance": 1000, "module": "personal"}
+]

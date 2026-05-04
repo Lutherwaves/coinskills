@@ -11,6 +11,18 @@ This skill is the front door to coinskills. Every session begins here. It locate
 
 ---
 
+## Step 0: Schema version gate
+
+**Schema version gate.** Read `<workspace>/profile.md` frontmatter. If `schema_version != 2` (or absent), print:
+
+> v0.2 features require migration. Run `/coinskills:migrate` first.
+
+Exit. Do NOT proceed.
+
+**Load aggregate state via snapshot.** Follow `skills/_shared/snapshot-compute.md`. The snapshot provides `liquidity` (disposable, emergency_buffer, monthly_expenses, monthly_capacity), per-goal `prereqs_met` and `projected_completion`, and `warnings` (every `_estimated` field). Use these values directly — do not recompute unless the snapshot is stale.
+
+**Goal references in output:** always render as `<title> (<id>)`. Example: `Emergency fund 6mo (emergency-fund-6mo)`. Never bare ids.
+
 ## Step 1: Locate the Workspace
 
 Read the file `~/.coinskills-workspace`. This file is a plain text file or symlink written by `/coinskills:init` containing the absolute path to the user's workspace repo (one line, no trailing newline required).
@@ -125,6 +137,26 @@ If there are no active goals, replace the entire `🎯 Active goals:` section wi
 ```
 🎯 Active goals: none
 ```
+
+### Blocked goals (waiting on prerequisites)
+
+For every goal where `snapshot.goals[].status == "blocked"`:
+
+- Render `<title> (<id>)` with the unmet-prereqs list from `snapshot.goals[].prereqs_met.unmet`. Show count: "<N>/<M> prereqs met".
+- Suggest the next user action: for any unmet `attestation` prereq, suggest `/coinskills:edit attestation <id> "<label>"`.
+
+Example:
+
+```
+Blocked (waiting on prerequisites):
+  Sample Car (mustang-dark-horse) — 2/5 prereqs met
+    ✗ finish-consumer-credit not complete
+    ✗ savings-emoney < €20,000
+    ○ Acme salary stable for 12 months — attestation pending
+        run: /coinskills:edit attestation mustang-dark-horse "Acme salary stable for 12 months"
+```
+
+Hide blocked goals from `start --concise` (default). Show with `start --all` or always when prereqs newly satisfied.
 
 ---
 
