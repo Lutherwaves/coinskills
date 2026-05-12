@@ -16,6 +16,8 @@ tmp/
 **/goals/*.md
 **/plans/*.md
 **/profile.md
+docs/specs/
+docs/plans/
 **/assets-illiquid.json
 **/modules/personal/
 **/modules/investments/holdings.json
