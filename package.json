@@ -1,6 +1,6 @@
 {
   "name": "coinskills",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Goal-centric financial superpowers for Claude Code",
   "license": "MIT",

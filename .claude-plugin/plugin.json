@@ -1,7 +1,7 @@
 {
   "name": "coinskills",
   "description": "Goal-centric financial superpowers for Claude Code — profile your finances, set goals, build plans, decide affordability, log transactions, analyze and review. Modular: personal, investments, business.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "Lutherwaves"
   },

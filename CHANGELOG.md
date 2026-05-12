@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 (2026-05-12)
+
+### Fixed
+- goals status enum complete/retired, review snapshot+recognition, afford Step 4.5 label
+
 ## v0.2.0 — 2026-04-29
 
 **Added**
