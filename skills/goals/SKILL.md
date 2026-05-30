@@ -24,8 +24,9 @@ Otherwise, read the argument and dispatch:
 | `list` (or bare `/coinskills:goals`) | List all goals |
 | `new` | Interview and create a new goal |
 | `edit <id>` | Edit an existing goal by id |
-| `achieve <id>` | Mark a goal as achieved |
-| `abandon <id>` | Mark a goal as abandoned |
+| `achieve <id>` | Mark a goal as achieved (auto-archives) |
+| `abandon <id>` | Mark a goal as abandoned (auto-archives) |
+| `unarchive <id>` | Restore an archived goal back to active state |
 
 If the argument doesn't match any of the above, show the table above and ask the user which action they want.
 
@@ -33,7 +34,9 @@ If the argument doesn't match any of the above, show the table above and ask the
 
 ## list
 
-Read every file matching `goals/*.md` in the workspace. For each file, extract the frontmatter fields: `id`, `title`, `type`, `target_amount`, `currency`, `deadline`, `priority`, `status`.
+Read every file matching `goals/*.md` in the workspace (non-recursive — this excludes `goals/archive/`). For each file, extract the frontmatter fields: `id`, `title`, `type`, `target_amount`, `currency`, `deadline`, `priority`, `status`.
+
+If the user passed `--all` (i.e. `/coinskills:goals list --all`), also include files from `goals/archive/*.md` and add a final section to the output for archived goals.
 
 For the **latest plan version** column: scan `plans/<id>-v*.md` — find the highest version number among files with `status: active`. If no active plan exists, show `—`. If any plan exists but all are superseded/abandoned, show the latest version number with a `(superseded)` note.
 
@@ -46,9 +49,18 @@ Print a markdown table:
 | emergency-fund | Emergency fund | savings | €12,000 | none | 2 | active | — |
 ```
 
-Sort by `priority` ascending (1 = most important first). Group: active goals first, then paused, then achieved/abandoned.
+Sort by `priority` ascending (1 = most important first). Group active goals first, then paused. Archived (achieved/abandoned) goals only appear when `--all` is passed, in a separate table below labeled `### Archive`.
 
 If `goals/` is empty or the directory doesn't exist, tell the user they have no goals yet and suggest running `/coinskills:goals new`.
+
+### Goal id resolution
+
+For all sub-actions below that take an `<id>` argument (`edit`, `achieve`, `abandon`, `unarchive`), resolve the file by checking:
+
+1. `goals/<id>.md` (active/paused goal)
+2. `goals/archive/<id>.md` (archived goal)
+
+If neither exists, list available ids from both locations and ask the user to pick one. `unarchive` only operates on files in `goals/archive/`; reject otherwise. `achieve`/`abandon` only operate on files in `goals/` top-level; reject if the goal is already archived.
 
 ---
 
@@ -154,9 +166,9 @@ goals: edit {id}
 
 ## achieve
 
-Load `goals/<id>.md`. If the file doesn't exist, list available ids and ask the user to pick one.
+Load `goals/<id>.md`. If the file doesn't exist in `goals/` top-level (e.g. already archived), tell the user and stop.
 
-Confirm: **"Mark '{title}' as achieved? This will supersede all linked active plans. (y/n)"**
+Confirm: **"Mark '{title}' as achieved? This will supersede all linked active plans and move the goal to goals/archive/. (y/n)"**
 
 If confirmed:
 
@@ -170,7 +182,9 @@ Date: {YYYY-MM-DD}
 
 3. Find all plan files in `plans/` where `goal_ids` includes this goal's id AND `status: active`. For each, set `status: superseded` and save the file.
 
-4. If any plans were superseded, tell the user: "Marked N plan(s) as superseded: {list of plan filenames}."
+4. **Archive**: create `goals/archive/` if it doesn't exist, then move the file from `goals/<id>.md` to `goals/archive/<id>.md` (use `git mv` so history is preserved).
+
+5. If any plans were superseded, tell the user: "Marked N plan(s) as superseded: {list of plan filenames}."
 
 ### Commit
 
@@ -182,7 +196,7 @@ goals: achieved {id}
 
 ## abandon
 
-Load `goals/<id>.md`. If the file doesn't exist, list available ids and ask the user to pick one.
+Load `goals/<id>.md`. If the file doesn't exist in `goals/` top-level (e.g. already archived), tell the user and stop.
 
 Ask: **"Why are you abandoning '{title}'? (free-form — this gets appended to the goal file)"**
 
@@ -199,10 +213,39 @@ Reason: {user's reason}
 
 3. Find all plan files in `plans/` where `goal_ids` includes this goal's id AND `status: active`. For each, set `status: superseded` and save. Inform the user how many plans were superseded.
 
+4. **Archive**: create `goals/archive/` if it doesn't exist, then `git mv goals/<id>.md goals/archive/<id>.md`.
+
 ### Commit
 
 ```
 goals: abandoned {id}
+```
+
+---
+
+## unarchive
+
+Load `goals/archive/<id>.md`. If the file doesn't exist there, list ids in `goals/archive/` and ask the user to pick one.
+
+Confirm: **"Restore '{title}' from archive? Status will reset to active. (y/n)"**
+
+If confirmed:
+
+1. Set `status: active` in the frontmatter.
+2. Append to the body:
+
+```
+## Unarchived
+Date: {YYYY-MM-DD}
+```
+
+3. `git mv goals/archive/<id>.md goals/<id>.md`.
+4. Suggest: "Run /coinskills:plan to build a fresh plan for {id}." (Don't auto-execute.)
+
+### Commit
+
+```
+goals: unarchived {id}
 ```
 
 ---
@@ -215,5 +258,6 @@ goals: abandoned {id}
 | edit | `goals: edit {id}` |
 | achieve | `goals: achieved {id}` |
 | abandon | `goals: abandoned {id}` |
+| unarchive | `goals: unarchived {id}` |
 
-Run `git add goals/ plans/` before committing (plans may be modified by achieve/abandon). Run `git commit -m "{message}"` from the workspace root.
+Run `git add goals/ plans/` before committing (plans may be modified by achieve/abandon; `git mv` already stages the rename). Run `git commit -m "{message}"` from the workspace root.

@@ -47,7 +47,8 @@ Load all data for the period. Read `profile.md` first to know which modules are 
 
 **Always load:**
 - `profile.md`
-- `goals/*.md` — all files with `status: active` (and any achieved/abandoned during the period)
+- `goals/*.md` — all files with `status: active`
+- `goals/archive/*.md` — only files whose `## Achieved` or `## Abandoned` date falls within the review period (so the report can credit achievements / note abandonments that happened in-period)
 - `plans/*.md` — all files with `status: active` or `status: superseded` during the period
 - `accounts.json`
 

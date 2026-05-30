@@ -274,7 +274,7 @@ For **multi-goal plans** (when `selected_goals` has more than one id), write a s
 
 For each goal id in `selected_goals`:
 
-1. Read `goals/{goal-id}.md`.
+1. Read `goals/{goal-id}.md`. If not found, fall back to `goals/archive/{goal-id}.md` — archived goals can be referenced for historical display but skip the projection update (an archived goal has no live projection).
 2. Check if the frontmatter contains a `projection` field. If it does, recompute it:
    - If the new plan's projected completion date ≤ deadline: set `projection: on-track`
    - If projected completion date > deadline by ≤ 3 months: set `projection: behind`
